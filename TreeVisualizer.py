@@ -5,6 +5,7 @@ import random
 import math
 from PageParser import wikiPerson
 import numpy as np
+import os
 
 start = time.perf_counter()
 
@@ -151,18 +152,19 @@ def click(event):
             node.expand()
 
 # initialize window
-def init_gui(URL):
+def init_gui(URL, tree_height):
     tk = Tk()
     WINDOW_HEIGHT = 1000
     WINDOW_WIDTH = 1200
     canvas = Canvas(tk, width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
     canvas.configure(background="#181a1b")
     tk.title("Wikipedia Tree Visualizer")
+    if not os.path.exists('images'):
+        os.makedirs('images')
     canvas.pack()
 
     root = None
     root_name = None
-    tree_height = 2
     width = WINDOW_WIDTH
     height = 10
     i = 2  # 2 leaf nodes after the first root
@@ -232,5 +234,6 @@ def init_gui(URL):
     tk.mainloop()
 
 
-URL = "https://en.wikipedia.org/wiki/Bill_Gates"
-init_gui(URL)
+URL = input("Enter Wikipedia url of a person: ")
+tree_height = int(input("How deep would you like the tree? (recommended under 3): "))
+init_gui(URL, tree_height)
