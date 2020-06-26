@@ -9,6 +9,7 @@ import os
 
 start = time.perf_counter()
 
+
 class ImageTree:
     # static variable for convenient lookup of nodes
     instances = []
@@ -71,7 +72,6 @@ class ImageTree:
                     parent_coords[0] -= 10
                     parent_coords[1] += 80
 
-
                 # change temporary child coordinates to point above shape
                 child_coords[0] += 25
                 child_coords[1] -= 5
@@ -80,7 +80,6 @@ class ImageTree:
                     ((parent_coords[0] - child_coords[0]) ** 2) + ((parent_coords[1] - child_coords[1]) ** 2))
 
                 sent_coords = [(child_coords[0] + parent_coords[0]) / 2, (child_coords[1] + parent_coords[1]) / 2]
-
 
                 padding = 25
                 if self.edges:
@@ -107,6 +106,7 @@ class ImageTree:
     def collapse(self):
         # recursively collapse all children and sub-children
         if self.children:
+            canvas = self.canvas
             for child in self.children:
                 child_tag = child.get_tag()
                 child_shape = canvas.find_withtag(child_tag)
@@ -151,6 +151,7 @@ def click(event):
         else:
             node.expand()
 
+
 # initialize window
 def init_gui(URL, tree_height):
     tk = Tk()
@@ -159,6 +160,7 @@ def init_gui(URL, tree_height):
     canvas = Canvas(tk, width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
     canvas.configure(background="#181a1b")
     tk.title("Wikipedia Tree Visualizer")
+
     if not os.path.exists('images'):
         os.makedirs('images')
     canvas.pack()
@@ -172,8 +174,6 @@ def init_gui(URL, tree_height):
     size = (50, 50)
 
     r = wikiPerson(URL, tree_height)
-
-
     paths, sentences, names = r.get_bfs_paths()
 
     while i <= pow(2, tree_height + 1):
@@ -202,9 +202,9 @@ def init_gui(URL, tree_height):
             else:
                 curr_state = "hidden"
 
-            img_padding = math.floor(width * (j / i)) - math.floor(width/2)
+            img_padding = math.floor(width * (j / i)) - math.floor(width / 2)
 
-            new_shape = canvas.create_image(math.floor(width * (j / i)) , height, tags='shape_' + str(node_count),
+            new_shape = canvas.create_image(math.floor(width * (j / i)), height, tags='shape_' + str(node_count),
                                             image=label.image, anchor=NW, state=curr_state)
 
             coords = canvas.coords(new_shape)
@@ -214,11 +214,9 @@ def init_gui(URL, tree_height):
             new_name = canvas.create_text(coords[0], coords[1], text=names.pop(0), tags='name_' + str(node_count),
                                           state=curr_state, width=size[0] + 20, fill="white")
 
-
             if node_count == 0:
                 root = new_shape
                 root_name = new_name
-
 
             # tag event to click of image
             canvas.tag_bind(new_shape, '<Button-1>', click)
@@ -228,12 +226,12 @@ def init_gui(URL, tree_height):
         i *= 2
 
     # create the tree
-    x = ImageTree(root, 'shape_0', root_name, node_count, canvas, sentences[:])
+    ImageTree(root, 'shape_0', root_name, node_count, canvas, sentences[:])
     finish = time.perf_counter()
-    print(f'Finished in {round(finish-start, 2)} second(s)')
+    print(f'Finished in {round(finish - start, 2)} second(s)')
     tk.mainloop()
 
-
+# TODO: Add error checking for url
 URL = input("Enter Wikipedia url of a person: ")
 tree_height = int(input("How deep would you like the tree? (recommended under 3): "))
-init_gui(URL, tree_height)
+init_gui(URL.replace(" ", ""), tree_height)

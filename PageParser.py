@@ -36,7 +36,6 @@ class wikiPerson:
             self.download_all()
 
     def download_all(self):
-
        for i in range(len(self.__class__.img_urls)):
            self.download_image(self.__class__.img_urls[i], self.__class__.img_names[i])
 
@@ -92,7 +91,7 @@ class wikiPerson:
                 curr_url = "https://en.wikipedia.org" + new
 
                 # ensure person hasn't already been added
-                if wikiPerson.is_name_link(new) and curr_url not in self.__class__.urls:
+                if wikiPerson.is_name_link(new) and (curr_url not in self.__class__.urls):
                     possible_names.append(new)
 
             people_added = 0
@@ -101,9 +100,8 @@ class wikiPerson:
             paragraphs = soup.select("p")
 
             while i < len(possible_names) and people_added < 2:
-                with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
-                    f1 = executor.submit(wikiPerson.is_person, possible_names[i])
-                    if f1.result():
+                    res = wikiPerson.is_person(possible_names[i])
+                    if res:
                         new_person = wikiPerson("https://en.wikipedia.org" + possible_names[i], 0)
                         tmp_name = possible_names[i][6:].split("_")
                         name = tmp_name[0] + " " + tmp_name[1]
