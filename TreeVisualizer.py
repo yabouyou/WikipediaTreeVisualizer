@@ -233,5 +233,5 @@ def init_gui(URL, tree_height):
 
 # TODO: Add error checking for url
 URL = input("Enter Wikipedia url of a person: ")
-tree_height = int(input("How deep would you like the tree? (recommended under 3): "))
+tree_height = int(input("Enter the height of the tree (recommended under 4): "))
 init_gui(URL.replace(" ", ""), tree_height)

@@ -4,7 +4,6 @@ import urllib
 import concurrent.futures
 import time
 import re
-import random
 import os
 import asyncio
 import aiohttp
@@ -128,7 +127,8 @@ class wikiPerson:
                 sentences = para.text.split(".")
                 for sentence in sentences:
                     if name in sentence:
-                        return sentence + "."
+                        pattern = "\[\d*?\]"
+                        return re.sub(pattern, '', sentence) + "."
 
     def get_bfs_paths(self):
         '''
